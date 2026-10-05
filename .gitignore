@@ -4,3 +4,5 @@ node_modules/
 .next/
 supabase/.temp/
 *.tsbuildinfo
+/docs/
+/.agents/skill/frontend-design/
