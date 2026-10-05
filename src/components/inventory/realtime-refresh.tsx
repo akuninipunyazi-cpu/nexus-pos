@@ -1,0 +1,5 @@
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+export function InventoryRealtime({tenantId}:{tenantId:string}){const router=useRouter();useEffect(()=>{const db=createClient();const channel=db.channel("tenant-inventory:"+tenantId);const refresh=()=>router.refresh();channel.on("postgres_changes",{event:"*",schema:"public",table:"inventory_movements",filter:"tenant_id=eq."+tenantId},refresh).on("postgres_changes",{event:"*",schema:"public",table:"purchase_requests",filter:"tenant_id=eq."+tenantId},refresh).on("postgres_changes",{event:"*",schema:"public",table:"purchase_orders",filter:"tenant_id=eq."+tenantId},refresh).on("postgres_changes",{event:"*",schema:"public",table:"inventory_receipts",filter:"tenant_id=eq."+tenantId},refresh).subscribe();return()=>{void db.removeChannel(channel);};},[router,tenantId]);return <span className="live-indicator"><i/>Inventory live</span>;}

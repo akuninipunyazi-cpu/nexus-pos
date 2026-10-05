@@ -1,0 +1,2 @@
+import { requireKitchen } from "@/lib/kitchen";import { getRecipeRows } from "@/lib/inventory";import { RecipeWorkspace } from "@/components/inventory/recipe-workspace";
+export default async function KitchenRecipesPage(){const {tenantId}=await requireKitchen();const recipes=await getRecipeRows(tenantId);return <><p className="eyebrow">Kitchen workspace</p><h1 className="page-title">Recipes</h1><p className="page-intro">Read-only recipe references used for preparation consumption.</p><RecipeWorkspace products={[]} recipes={recipes} readOnly/></>}

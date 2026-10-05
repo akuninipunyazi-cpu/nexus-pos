@@ -1,0 +1,5 @@
+import { CashierOrderList } from "@/components/cashier/order-list";
+import { getCashierOrders, requireCashier } from "@/lib/cashier";
+import Link from "next/link";
+
+export default async function CashierOrdersPage() { const { tenantId } = await requireCashier(); const orders = await getCashierOrders(); return <><div className="page-heading-row"><div><p className="eyebrow">Cashier</p><h1 className="page-title">Incoming orders</h1><p className="page-intro">Customer table orders arrive here. Cashiers confirm payment; the kitchen queue begins after payment.</p></div><Link className="primary-button compact button-link" href="/cashier/takeaway">+ New takeaway</Link></div><section className="platform-section"><div className="section-heading"><div><p className="eyebrow">Operational queue</p><h2>Pending and paid orders</h2></div></div><CashierOrderList tenantId={tenantId} orders={orders} /></section></> }

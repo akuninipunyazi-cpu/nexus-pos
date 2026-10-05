@@ -1,0 +1,4 @@
+import { ProductManagement } from "@/components/store/product-management";
+import { requireStoreOwner } from "@/lib/store";
+import { createClient } from "@/lib/supabase/server";
+export default async function ProductsPage(){const {tenantId}=await requireStoreOwner();const supabase=await createClient();const [products,categories]=await Promise.all([supabase.from("products").select("id,category_id,name,description,price,image_url,is_active").eq("tenant_id",tenantId).order("name"),supabase.from("categories").select("id,name,is_active").eq("tenant_id",tenantId).order("name")]);return <><p className="eyebrow">Store workspace</p><h1 className="page-title">Products</h1><p className="page-intro">Set the active menu and its exact selling prices. Product images remain optional until storage is configured.</p><ProductManagement products={products.data??[]} categories={categories.data??[]}/></>}

@@ -1,0 +1,4 @@
+import { CategoryManagement } from "@/components/store/category-management";
+import { requireStoreOwner } from "@/lib/store";
+import { createClient } from "@/lib/supabase/server";
+export default async function CategoriesPage(){const {tenantId}=await requireStoreOwner();const supabase=await createClient();const result=await supabase.from("categories").select("id,name,is_active").eq("tenant_id",tenantId).order("name");return <><p className="eyebrow">Store workspace</p><h1 className="page-title">Categories</h1><p className="page-intro">Keep the menu easy to scan without baking business categories into the application.</p><CategoryManagement categories={result.data??[]}/></>}
