@@ -1,13 +1,16 @@
 export const EXPIRING_SOON_WINDOW_DAYS = 30;
 
-export type SubscriptionStatus = "ACTIVE" | "EXPIRING_SOON" | "EXPIRED";
+export type SubscriptionStatus = "TRIAL" | "ACTIVE" | "EXPIRING_SOON" | "EXPIRED" | "SUSPENDED";
 
-export function getSubscriptionStatus(expiresAt: string, now = new Date()): SubscriptionStatus {
+export function getSubscriptionStatus(expiresAt: string, now = new Date(), storedStatus?: string): SubscriptionStatus {
   const expires = new Date(expiresAt).getTime();
   const current = now.getTime();
   const window = EXPIRING_SOON_WINDOW_DAYS * 24 * 60 * 60 * 1000;
 
   if (expires <= current) return "EXPIRED";
+  if (storedStatus === "EXPIRED") return "EXPIRED";
+  if (storedStatus === "SUSPENDED") return "SUSPENDED";
+  if (storedStatus === "TRIAL") return "TRIAL";
   if (expires <= current + window) return "EXPIRING_SOON";
   return "ACTIVE";
 }

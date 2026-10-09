@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { CustomerMenu } from "@/components/order/customer-menu";
 
-type Context = { tenant: { name: string; slug: string }; table: { table_number: string }; categories: { name: string }[]; products: { id: string; name: string; description: string | null; price: number | string; image_url: string | null; category: string }[] };
+type Context = { tenant: { name: string; slug: string }; table: { table_number: string }; qris_available?: boolean; categories: { name: string }[]; products: { id: string; name: string; description: string | null; price: number | string; image_url: string | null; category: string }[] };
 
 export default async function PublicTablePage({ params }: { params: Promise<{ tenantSlug: string; tablePublicToken: string }> }) {
   const { tenantSlug, tablePublicToken } = await params;

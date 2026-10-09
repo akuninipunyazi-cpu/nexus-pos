@@ -3,6 +3,8 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { ROLE_HOME } from "@/lib/roles";
+import type { AppRole } from "@/lib/roles";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -25,13 +27,35 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
     const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
     if (signInError) {
       setError("Email or password could not be verified.");
       setLoading(false);
       return;
     }
-    router.push("/portal");
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("role, is_active")
+      .eq("id", signInData.user.id)
+      .maybeSingle();
+    if (profileError) {
+      await supabase.auth.signOut();
+      setError("Account workspace could not be verified. Please try again.");
+      setLoading(false);
+      return;
+    }
+    if (!profile) {
+      router.push("/register/complete");
+      router.refresh();
+      return;
+    }
+    if (!profile.is_active) {
+      await supabase.auth.signOut();
+      setError("This account is inactive. Contact your platform administrator.");
+      setLoading(false);
+      return;
+    }
+    router.push(ROLE_HOME[profile.role as AppRole] ?? "/portal");
     router.refresh();
   }
 

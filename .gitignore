@@ -6,3 +6,6 @@ supabase/.temp/
 *.tsbuildinfo
 /docs/
 /.agents/skills/frontend-design/
+
+.vercel
+.env*
